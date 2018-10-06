@@ -3,14 +3,14 @@ import sys, os, re
 import shutil #for copying files
 from PIL import Image
 
-#This script deleted night pictures
-#Very basic check is done only based on one pixel
-#If the pixels RGB value is very dark then don't copy it to a new directory
+#This script sorts out dark pictures from brigh ones
+#Very basic check is done only based on two pixels (works with timelaps pictures)
+#If the pixels RGB values are very dark then they are not copied to a new directory
 
 #File input location
-filelocation = "/home/sander/Pictures/camera/"
+filelocation = "/home/user/Pictures/camera/"
 #Output location where the modified files will be written
-outputlocation = "/home/sander/Pictures/bright/"
+outputlocation = "/home/user/Pictures/bright/"
 
 #Changing directory to where the pictures are
 os.chdir(filelocation)
@@ -34,19 +34,20 @@ for infile in os.listdir(filelocation):
             #Get the date part of the filename into variables
             matchObj = re.match( '(\d{4})-(\d{2})-(\d{2})_(\d{4}).*', infile, re.M|re.I)
             if matchObj:
-                #rgb_im = im.convert('RGB')
-                #r, g, b = rgb_im.getpixel((1, 1))
-                r, g, b = im.getpixel((33, 457))
-                #Black has RGB values of 0 0 0. The closer the sum of thre three colours is to zero the darker the picture.
-                rgbsum = int(r) + int(g) + int(b)
-                #print(infile, " RGB: ", r, g, b, " sum:", rgbsum)
-                if ( rgbsum < 150 ):
+                r1, g1, b1 = im.getpixel((33, 457))
+                r2, g2, b2 = im.getpixel((540, 460))
+                #Black has RGB values of 0 0 0. The closer the sum of the three colours is to zero the darker the picture.
+                rgbsum1 = int(r1) + int(g1) + int(b1)
+                rgbsum2 = int(r2) + int(g2) + int(b2)
+                #print(infile, " RGB1: ", r1, g1, b1, " sum:", rgbsum1)
+                #print(infile, " RGB2: ", r2, g2, b2, " sum:", rgbsum2)
+                if ( rgbsum1 < 300 or rgbsum2 < 170 ):
                     #Ignoring dark pictures
                     #print("Dark picture with sum of", rgbsum, " ", infile)
                     pass
                 else:
                     #Copy only pictures that are not dark
-                    shutil.copy(infile, outputlocation + "out" + infile)
+                    shutil.copy(infile, outputlocation + infile)
             else:
                 print("No match for: " + infile)
     except IOError:
