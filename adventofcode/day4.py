@@ -135,6 +135,15 @@ c = collections.Counter(sleep_counter_list)
 for letter, count in c.most_common(14):
     if max_ID in letter:
         minute = letter.split("_")[1]
-        print("Guard slept most during minute:  ",minute, " counted ", count, " times")
         guard = max_ID[1:]
+        print("Guard",guard,"slept most total during minute:  ",minute, " counted ", count, " times")
+print("Answer = ", (int(guard) * int(minute)), "(",guard,"*",minute,")")
+
+#PART 2
+#Strategy 2: Of all guards, which guard is most frequently asleep on the same minute?
+c = collections.Counter(sleep_counter_list)
+for letter, count in c.most_common(1):
+    guard = letter.split("_")[0][1:]
+    minute = letter.split("_")[1]
+    print("Guard",guard,"slept most times during minute:  ",minute, " counted ", count, " times")
 print("Answer = ", (int(guard) * int(minute)), "(",guard,"*",minute,")")
